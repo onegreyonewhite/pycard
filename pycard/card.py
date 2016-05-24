@@ -15,18 +15,25 @@ class Card(object):
     BRAND_MASTERCARD = 'mastercard'
     BRAND_AMEX = 'amex'
     BRAND_DISCOVER = 'discover'
+    BRAND_MAESTRO = "maestro"
+    BRAND_JCB = "jcb"
     BRAND_UNKNOWN = u'unknown'
     BRANDS = {
         BRAND_VISA: re.compile(r'^4\d{12}(\d{3})?$'),
         BRAND_MASTERCARD: re.compile(r'^(5[1-5]\d{4}|677189)\d{10}$'),
-        BRAND_AMEX: re.compile(r'^3[47]\d{13}$'),
+        BRAND_AMEX: re.compile(r'^3[4,7]\d{13}$'),
         BRAND_DISCOVER: re.compile(r'^(6011|65\d{2})\d{12}$'),
+        BRAND_MAESTRO:
+            re.compile(r'^(50(18|20|38)|63(04,90)|67(59|6[1-3]|99))\d{8,15}$'),
+        BRAND_JCB: re.compile(r'^35(2[89]|[3-8][0-9])\d{12}$'),
     }
     FRIENDLY_BRANDS = {
         BRAND_VISA: 'Visa',
         BRAND_MASTERCARD: 'MasterCard',
         BRAND_AMEX: 'American Express',
         BRAND_DISCOVER: 'Discover',
+        BRAND_MAESTRO: "Maestro",
+        BRAND_JCB: "JCB",
     }
 
     # Common test credit cards
@@ -88,7 +95,9 @@ class Card(object):
             return u'XXXX-XXXXXX-X{e}'.format(e=self.number[11:15])
 
         # All other cards
-        return u'XXXX-XXXX-XXXX-{e}'.format(e=self.number[12:16])
+        show_end = len(self.number)
+        show_start = show_end - 4
+        return u'XXXX-XXXX-XXXX-{e}'.format(e=self.number[show_start:show_end])
 
     @property
     def brand(self):
